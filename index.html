@@ -11,36 +11,40 @@
     <title>Expense Tracker App</title>
 </head>
 
-<body>
-    <header id="header">
-        <div class="container">
+<body class="container">
+    <header id="header" class="box">
+        <div class="">
             <h1>Expense Tracker App</h1>
         </div>
         <div class="search">
             <input type="text" placeholder="Search item...">
         </div>
     </header>
-    <form id="form">
-        <label id="amount" for="amount">Add amount: </label>
-        <input type="text" name="amount">
-        <label id="description" for="description">Add description: </label>
-        <input type="text" name="description">
-        <label id="category" for="category">Add category: </label>
-        <select>
+    <form id="form" class="box">
+        <label for="amount">Add amount: </label>
+        <input type="number" name="amount" id="amount" required>
+        <label for="description">Add description: </label>
+        <input type="text" name="description" id="description" required>
+        <label for="category">Add category: </label>
+        <select id="category">
             <option value="movie">Movie</option>
             <option value="shopping">Shopping</option>
             <option value="food">Food</option>
             <option value="trip">Trip</option>
             <option value="course">Course</option>
         </select>
-        <button type="submit">Add Expense</button>
+        <button type="submit" onsubmit="addItem">Add Expense</button>
     </form>
-    <div class="items">
-        <ul>
-            <li>100 - Movie - On vacation <button>X</button> <button>Edit</button></li>
-            <li>200 - Food - Pizza <button>X</button> <button>Edit</button></li>
+    <div class="box">
+        <ul id="items">
+            <li>100 - Movie - On vacation <button class="deleteBtn btn">X</button> <button
+                    class="editBtn btn">Edit</button></li>
+            <li>200 - Food - Pizza <button class="deleteBtn btn">X</button> <button class="editBtn btn">Edit</button>
+            </li>
         </ul>
     </div>
+
+    <script src="index.js"></script>
 </body>
 
 </html>
