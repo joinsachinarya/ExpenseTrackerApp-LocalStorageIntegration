@@ -1,22 +1,39 @@
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("Loaded!");
+})
+
+
 const header = document.getElementById("header");
 const items = document.getElementById("items");
 const form = document.getElementById("form");
+const itemsArray = [];
 
 const deleteItem = (event) => {
     if (event.target.classList.contains("deleteBtn")) {
         const element = event.target.parentElement;
         items.removeChild(element);
-        console.log(element);
     }
 
 }
 const editItem = (event) => {
     if (event.target.classList.contains("editBtn")) {
-        const element = event.target.parentElement;
-        element.style.color = "red";
-        console.log(element);
-    }
+        var element = event.target.parentElement;
+        var index = Array.from(items.children).indexOf(element);
 
+        if (index !== -1) {
+            var itemObj = itemsArray[index];
+            var newAmount = prompt("Edit amount:", itemObj.amount);
+            var newDes = prompt("Edit description:", itemObj.description);
+
+            if (newAmount !== null && newAmount.trim() !== null) {
+                itemObj.amount = newAmount;
+                itemObj.description = newDes;
+                element.firstChild.textContent = newAmount;
+                element.getElementsByTagName("input")[0].textContent = newDes;
+                localStorage.setItem('items', JSON.stringify(itemsArray));
+            }
+        }
+    }
 }
 
 const createItem = (amount, description, category) => {
@@ -36,6 +53,8 @@ const createItem = (amount, description, category) => {
     li.appendChild(deleteBtn);
     li.appendChild(editBtn);
 
+    const itemsObj = { amount: amount, description: description, category: category }
+    itemsArray.push(itemsObj)
     items.append(li)
 
 
@@ -47,8 +66,7 @@ const addItem = (event) => {
     var descriptionValue = document.getElementById("description").value;
     var categoryValue = document.getElementById("category").value;
     createItem(amountValue, descriptionValue, categoryValue);
-    console.log(amountValue, descriptionValue, categoryValue);
-
+    localStorage.setItem("item", JSON.stringify(itemsArray));
 }
 
 items.addEventListener("click", editItem);
