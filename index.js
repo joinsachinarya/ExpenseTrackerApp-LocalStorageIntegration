@@ -1,35 +1,54 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("Loaded!");
-})
+    if (localStorage.getItem("items")) {
+        const itemsArr = Array.from(JSON.parse(localStorage.getItem("items")));
+        itemsArr.forEach((item) => {
+            createItem(item.amount, item.description, item.category);
+        })
 
+    }
+})
 
 const header = document.getElementById("header");
 const items = document.getElementById("items");
 const form = document.getElementById("form");
+const search = document.getElementById("search");
 const itemsArray = [];
+
+
+
 
 const deleteItem = (event) => {
     if (event.target.classList.contains("deleteBtn")) {
-        const element = event.target.parentElement;
-        items.removeChild(element);
+        if (confirm("Are you sure?")) {
+            const li = event.target.parentElement;
+            const index = Array.from(items.children).indexOf(li);
+            if (index !== -1) {
+                itemsArray.splice(index, 1);
+                localStorage.setItem("items", JSON.stringify(itemsArray));
+            }
+            items.removeChild(li);
+        }
     }
 
 }
 const editItem = (event) => {
     if (event.target.classList.contains("editBtn")) {
-        var element = event.target.parentElement;
-        var index = Array.from(items.children).indexOf(element);
+        let element = event.target.parentElement;
+        let index = Array.from(items.children).indexOf(element);
 
         if (index !== -1) {
-            var itemObj = itemsArray[index];
-            var newAmount = prompt("Edit amount:", itemObj.amount);
-            var newDes = prompt("Edit description:", itemObj.description);
+            let elementValues = itemsArray[index];
+            let newAmount = prompt("Edit amount:", elementValues.amount);
+            let newDes = prompt("Edit description:", elementValues.description);
+            let newCategory = prompt("Edit category:", elementValues.category);
 
-            if (newAmount !== null && newAmount.trim() !== null) {
-                itemObj.amount = newAmount;
-                itemObj.description = newDes;
-                element.firstChild.textContent = newAmount;
-                element.getElementsByTagName("input")[0].textContent = newDes;
+            if (!isNaN(newAmount) && newDes.trim() !== "" && newCategory) {
+                elementValues.amount = newAmount;
+                elementValues.description = newDes;
+                elementValues.category = newCategory;
+                element.children[0].textContent = newAmount;
+                element.children[1].textContent = newDes;
+                element.children[2].textContent = newCategory;
                 localStorage.setItem('items', JSON.stringify(itemsArray));
             }
         }
@@ -38,18 +57,31 @@ const editItem = (event) => {
 
 const createItem = (amount, description, category) => {
 
-    var li = document.createElement("li");
+    let li = document.createElement("li");
+    li.className = "list-group-item d-flex justify-content-between"
+    li.style.listStyle = "none";
 
-    var span = document.createElement("span");
-    span.textContent = `${amount} - ${description} - ${category}`;
-    li.appendChild(span);
+    let spanAmount = document.createElement("span");
+    spanAmount.textContent = amount;
+    spanAmount.className = "";
+    let spanDes = document.createElement("span");
+    spanDes.textContent = description;
+    spanDes.className = "";
+    let spanCategory = document.createElement("span");
+    spanCategory.textContent = category;
+    spanCategory.className = ""
 
-    var deleteBtn = document.createElement("button");
-    var editBtn = document.createElement("button");
+    li.appendChild(spanAmount);
+    li.appendChild(spanDes);
+    li.appendChild(spanCategory);
+
+
+    let deleteBtn = document.createElement("button");
+    let editBtn = document.createElement("button");
     deleteBtn.appendChild(document.createTextNode("X"));
-    deleteBtn.className = "deleteBtn btndeleteBtn btn";
+    deleteBtn.className = "deleteBtn btn btn-danger ";
     editBtn.appendChild(document.createTextNode("Edit"));
-    editBtn.className = "editBtn btn"
+    editBtn.className = "editBtn btn btn-warning "
     li.appendChild(deleteBtn);
     li.appendChild(editBtn);
 
@@ -62,13 +94,36 @@ const createItem = (amount, description, category) => {
 
 const addItem = (event) => {
     event.preventDefault();
-    var amountValue = document.getElementById("amount").value;
-    var descriptionValue = document.getElementById("description").value;
-    var categoryValue = document.getElementById("category").value;
+    let amountValue = document.getElementById("amount").value;
+    let descriptionValue = document.getElementById("description").value;
+    let categoryValue = document.getElementById("category").value;
     createItem(amountValue, descriptionValue, categoryValue);
-    localStorage.setItem("item", JSON.stringify(itemsArray));
+    localStorage.setItem("items", JSON.stringify(itemsArray));
+    document.getElementById("amount").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("category").value = "";
+}
+const searchItem = (event) => {
+    let searchedText = event.target.value;
+    let itemList = items.getElementsByTagName("li");
+    let itemsArray = Array.from(itemList);
+
+    let resElements = items.getElementsByTagName("span");
+    let resElementsArray = Array.from(resElements);
+
+    itemsArray.forEach(function (it, idx) {
+        let amount = it.firstChild.textContent;
+        if (amount.indexOf(searchedText) !== -1) {
+            console.log("true");
+            it.style.display = "block"
+        } else {
+            console.log("false");
+            it.style.display = "none"
+        }
+    })
 }
 
+search.addEventListener("keyup", searchItem)
 items.addEventListener("click", editItem);
 items.addEventListener("click", deleteItem);
 form.addEventListener("submit", addItem);
