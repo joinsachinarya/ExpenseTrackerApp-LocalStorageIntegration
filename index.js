@@ -58,18 +58,17 @@ const editItem = (event) => {
 const createItem = (amount, description, category) => {
 
     let li = document.createElement("li");
-    li.className = "list-group-item d-flex justify-content-between"
-    li.style.listStyle = "none";
+    li.className = "list-group-item list-group-item-action "
 
     let spanAmount = document.createElement("span");
     spanAmount.textContent = amount;
-    spanAmount.className = "";
+    spanAmount.className = "d-inline-block text-start w-25";
     let spanDes = document.createElement("span");
     spanDes.textContent = description;
-    spanDes.className = "";
+    spanDes.className = "d-inline-block text-start w-25";
     let spanCategory = document.createElement("span");
     spanCategory.textContent = category;
-    spanCategory.className = ""
+    spanCategory.className = "d-inline-block text-start w-25"
 
     li.appendChild(spanAmount);
     li.appendChild(spanDes);
@@ -79,9 +78,9 @@ const createItem = (amount, description, category) => {
     let deleteBtn = document.createElement("button");
     let editBtn = document.createElement("button");
     deleteBtn.appendChild(document.createTextNode("X"));
-    deleteBtn.className = "deleteBtn btn btn-danger ";
+    deleteBtn.className = "deleteBtn btn btn-danger mx-5";
     editBtn.appendChild(document.createTextNode("Edit"));
-    editBtn.className = "editBtn btn btn-warning "
+    editBtn.className = "editBtn btn btn-warning float-sm-right"
     li.appendChild(deleteBtn);
     li.appendChild(editBtn);
 
@@ -104,21 +103,17 @@ const addItem = (event) => {
     document.getElementById("category").value = "";
 }
 const searchItem = (event) => {
-    let searchedText = event.target.value;
-    let itemList = items.getElementsByTagName("li");
+    let searchedText = event.target.value.toLocaleLowerCase();
+    let itemList = items.getElementsByTagName("span");
     let itemsArray = Array.from(itemList);
 
-    let resElements = items.getElementsByTagName("span");
-    let resElementsArray = Array.from(resElements);
-
-    itemsArray.forEach(function (it, idx) {
-        let amount = it.firstChild.textContent;
-        if (amount.indexOf(searchedText) !== -1) {
-            console.log("true");
-            it.style.display = "block"
+    itemsArray.forEach(function (it) {
+        let textContent = it.textContent.toLocaleLowerCase();
+        console.log(textContent);
+        if (textContent.indexOf(searchedText) !== -1) {
+            it.parentElement.style.display = "block";
         } else {
-            console.log("false");
-            it.style.display = "none"
+            it.parentElement.style.display = "none";
         }
     })
 }
